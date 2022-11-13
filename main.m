@@ -2,8 +2,8 @@ chain_length = 50;
 % 最终马尔可夫链长度
 main_note = 67;
 timeing = 98;
-delta_beat = 1;
-duration_beat = 1;
+delta_beat = 0.5;
+duration_beat = 0.5;
 
 filename1 = "matrix.json";
 P = loadjson(filename1);

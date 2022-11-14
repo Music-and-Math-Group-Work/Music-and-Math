@@ -1,3 +1,5 @@
+% these below can all be changed.!!!!!!!!!!!!!
+
 function [matrix, scale] = reader(filename, section_beat, unit_beat, main_note)
     %myFun - Description
     %

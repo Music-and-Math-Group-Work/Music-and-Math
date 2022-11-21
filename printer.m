@@ -1,4 +1,4 @@
-function [chain, nmat, scale] = printer(matrix, type_of_chain, scale_c, scale_r, scale_file, min_bars_length, max_bars_length, main_note, timeing, meter, type_of_pi, output_file)
+function [chain, nmat, scale] = printer(matrix, type_of_chain, scale_c, scale_r, scale_file, min_bars_length, max_bars_length, main_note, timeing, meter, type_of_pi, output_file, abs)
     % @brief printer 根据给定的转移矩阵，给出输出。
     % @param matrix 转移矩阵
     % @param type_of_chain Markov chain种类
@@ -23,17 +23,24 @@ function [chain, nmat, scale] = printer(matrix, type_of_chain, scale_c, scale_r,
     % @return scale 列索引，绝对音高
     % 索引说明
     % (时值,音高) 绝对音高
+    if abs == 1
+        abs_scale_c = scale_c;
+        start_beat = 0;
+        beat_time = 60 / timeing;
+        P = matrix';
+        target0 = find(abs_scale_c == main_note);
+    else
+        scale_s = loadjson(scale_file);
+        P = matrix';
 
-    scale_s = loadjson(scale_file);
-    P = matrix';
+        % beats_in_bar = meter / duration_beat;
+        start_beat = 0;
+        beat_time = 60 / timeing;
 
-    % beats_in_bar = meter / duration_beat;
-    start_beat = 0;
-    beat_time = 60 / timeing;
-
-    notes = scale_s + main_note;
-    main_element = find(scale_s == 0);
-    [abs_scale_c, abs_scale_r, target0] = rescale(scale_c, scale_r, notes, main_element, type_of_chain);
+        notes = scale_s + main_note;
+        main_element = find(scale_s == 0);
+        [abs_scale_c, abs_scale_r, target0] = rescale(scale_c, scale_r, notes, main_element, type_of_chain);
+    end
 
     chain = zeros(1, meter * max_bars_length);
     chain(1) = target0;
@@ -49,6 +56,8 @@ function [chain, nmat, scale] = printer(matrix, type_of_chain, scale_c, scale_r,
         l = height(abs_scale_c);
         P_i = zeros(l, 1);
         P_i(target0) = 1;
+        disp(l)
+        disp(height(P))
 
         beat_last = start_beat;
         i = 2;
